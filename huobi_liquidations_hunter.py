@@ -130,18 +130,18 @@ class HuobiLiquidationHunter(object):
             self.logger.error("long or short must be stated")
         for pair in self.pairs:
             for k in liq_15m[pair].items():
+                if liq_size == 0:
+                    liq_size_str = 'Big'
+                else:
+                    liq_size_str = 'Medium'
+                discord_msg = "huobi exchange: {} {} {} liquidations detected: {}".format(
+                    liq_size_str, pair, side, k
+                )
                 if k[1][_side] >= thresh_hold[pair][liq_size]:
-                    if k in big_liqs:
+                    if discord_msg in big_liqs:
                         continue
-                    big_liqs.append(k)
-                    if liq_size == 0:
-                        liq_size_str = 'Big'
-                    else:
-                        liq_size_str = 'Medium'
+                    big_liqs.append(discord_msg)
 
-                    discord_msg = "huobi exchange: {} {} {} liquidations detected: {}".format(
-                        liq_size_str, pair, side, k
-                    )
                     self.logger.info(discord_msg)
                     liq_date = datetime.datetime.strptime(k[0], '%d/%m/%Y, %H:%M')
                     if liq_date > now - datetime.timedelta(seconds=18000) and liq_size_str == 'Big':
