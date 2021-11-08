@@ -31,7 +31,7 @@ class HuobiLiquidationHunter(object):
 
         # Prints logger info to terminal
         _logger = logging.getLogger()
-        _logger.setLevel(logging.DEBUG)  # Change this to DEBUG if you want a lot more info
+        _logger.setLevel(logging.INFO)  # Change this to DEBUG if you want a lot more info
         ch = logging.StreamHandler()
         # create formatter
         _format = '%(asctime)s:%(levelname)s: %(message)s'
@@ -145,7 +145,8 @@ class HuobiLiquidationHunter(object):
                     self.logger.info(discord_msg)
                     liq_date = datetime.datetime.strptime(k[0], '%d/%m/%Y, %H:%M')
                     if liq_date > now - datetime.timedelta(seconds=18000) and liq_size_str == 'Big':
-                        os.system('echo "{}" > {}/git/discord_alerts/discord_msg'.format(discord_msg, expanduser('~')))
+                        os.system('echo "{}" > {}/git/discord_alerts/messages/huobi_discord_msg_{}'.format(
+                            discord_msg, expanduser('~'), pair))
                         sleep(30)
         with open('big.liquidations.huobi', 'wb') as lq:
             pickle.dump(big_liqs, lq)
